@@ -9,20 +9,24 @@ import '../../../common/widgets/xpansion_tile.dart';
 import '../controllers/xpansion_provider.dart';
 import '../pages/update_task.dart';
 
-class TomorrowList extends ConsumerWidget {
-  const TomorrowList({super.key});
+class DayAfterTomo extends ConsumerWidget {
+  const DayAfterTomo({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final todos = ref.watch(todoStateProvider);
     var colors = ref.read(todoStateProvider.notifier).getRandomColor();
-    String tomorrow = ref.read(todoStateProvider.notifier).getTomorrow();
+    String dayAfterTomo =
+        ref.read(todoStateProvider.notifier).getDayAfterTomo();
     var tomorrowTasks = todos.where(
-      (element) => element.date!.contains(tomorrow),
+      (element) => element.date!.contains(dayAfterTomo),
     );
 
     return XpansionTile(
-        text: "Tomorrow's Task",
+        text: DateTime.now()
+            .add(const Duration(days: 2))
+            .toString()
+            .substring(5, 10),
         text2: "Task are shown here",
         onExpansionChanged: (bool expanded) {
           ref.read(xpansionStateProvider.notifier).setStart(!expanded);
@@ -54,9 +58,12 @@ class TomorrowList extends ConsumerWidget {
                 onTap: () {
                   titles = todo.title.toString();
                   descs = todo.desc.toString();
-                Navigator.push(
-                context, 
-                MaterialPageRoute(builder: (context) => UpdateTask(id: todo.id ?? 0,)));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => UpdateTask(
+                                id: todo.id ?? 0,
+                              )));
                 },
                 child: Icon(MdiIcons.circleEditOutline),
               ),

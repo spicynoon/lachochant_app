@@ -5,6 +5,7 @@ import 'package:lachochant_app/common/widgets/appstyle.dart';
 import 'package:lachochant_app/common/widgets/height_spacer.dart';
 import 'package:lachochant_app/common/widgets/reusable_text.dart';
 import 'package:lachochant_app/common/widgets/width_spacer.dart';
+import 'package:lachochant_app/features/todo/controllers/todo/todo_provider.dart';
 
 class BottomTitles extends StatelessWidget {
   const BottomTitles({super.key, required this.text, required this.text2, this.clr});
@@ -23,14 +24,14 @@ class BottomTitles extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Consumer(builder: (context, ref, child) {
+              var colors = ref.read(todoStateProvider.notifier).getRandomColor();
               return Container(
                 height: 80,
                 width: 5,
                 decoration: BoxDecoration(
                     borderRadius:
                         BorderRadius.all(Radius.circular(AppConst.kRadius)),
-                    // TODO: ADD DYNAMIC COLORS
-                    color: AppConst.kGreen),
+                    color: colors),
               );
             }),
             const WidthSpacer(wydth: 15),

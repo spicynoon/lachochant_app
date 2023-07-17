@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:lachochant_app/common/helpers/notifications_helper.dart';
-import 'package:lachochant_app/common/models/task_models.dart';
 import 'package:lachochant_app/common/utils/constants.dart';
 import 'package:lachochant_app/common/widgets/appstyle.dart';
 import 'package:lachochant_app/common/widgets/custom_otn_btn.dart';
@@ -10,36 +8,21 @@ import 'package:lachochant_app/common/widgets/custom_text.dart';
 import 'package:lachochant_app/common/widgets/height_spacer.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
     as picker;
-import 'package:lachochant_app/common/widgets/show_dialogue.dart';
 import 'package:lachochant_app/features/todo/controllers/dates/dates_provider.dart';
 import 'package:lachochant_app/features/todo/controllers/todo/todo_provider.dart';
-import 'package:lachochant_app/features/todo/pages/homepage.dart';
 
-class AddTask extends ConsumerStatefulWidget {
-  const AddTask({super.key});
+class UpdateTask extends ConsumerStatefulWidget {
+  const UpdateTask({super.key, required this.id});
+
+  final int id;
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _AddTaskState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _UpdateTaskState();
 }
 
-class _AddTaskState extends ConsumerState<AddTask> {
-  final TextEditingController title = TextEditingController();
-  final TextEditingController desc = TextEditingController();
-  List<int> notification = [];
-  late NotificationsHelper notifierHelper;
-  late NotificationsHelper controller;
-  final TextEditingController search = TextEditingController();
-
-  @override
-  void initState() {
-    notifierHelper = NotificationsHelper(ref: ref);
-    Future.delayed(const Duration(seconds: 0), () {
-      controller = NotificationsHelper(ref: ref);
-    });
-    notifierHelper.initializeNotification();
-
-    super.initState();
-  }
+class _UpdateTaskState extends ConsumerState<UpdateTask> {
+  final TextEditingController title = TextEditingController(text: titles);
+  final TextEditingController desc = TextEditingController(text: descs);
 
   @override
   Widget build(BuildContext context) {
@@ -60,13 +43,13 @@ class _AddTaskState extends ConsumerState<AddTask> {
             CustomTextField(
               hintText: "Add Title",
               controller: title,
-              hintStyle: appstyle(16, AppConst.kGreyDk, FontWeight.w600),
+              hintStyle: appstyle(16, AppConst.kGreyLight, FontWeight.w600),
             ),
             const HeightSpacer(hieght: 20),
             CustomTextField(
               hintText: "Add Description",
               controller: desc,
-              hintStyle: appstyle(16, AppConst.kGreyDk, FontWeight.w600),
+              hintStyle: appstyle(16, AppConst.kGreyLight, FontWeight.w600),
             ),
             const HeightSpacer(hieght: 20),
             CustomOTLNBTN(
@@ -84,7 +67,7 @@ class _AddTaskState extends ConsumerState<AddTask> {
                 },
                 widht: AppConst.kWidth,
                 height: 52.h,
-                color: AppConst.kGreen,
+                color: AppConst.kLight,
                 color2: AppConst.kBlueLight,
                 text: scheduleDate == ""
                     ? "Set Date"
@@ -100,14 +83,11 @@ class _AddTaskState extends ConsumerState<AddTask> {
                         ref
                             .read(startTimeStateProvider.notifier)
                             .setStart(date.toString());
-                        notification = ref
-                            .read(startTimeStateProvider.notifier)
-                            .dates(date);
                       }, locale: picker.LocaleType.en);
                     },
                     widht: AppConst.kWidth * 0.4,
                     height: 52.h,
-                    color: AppConst.kGreen,
+                    color: AppConst.kLight,
                     color2: AppConst.kBlueLight,
                     text: start == "" ? "Start Time" : start.substring(10, 16)),
                 CustomOTLNBTN(
@@ -121,7 +101,7 @@ class _AddTaskState extends ConsumerState<AddTask> {
                     },
                     widht: AppConst.kWidth * 0.4,
                     height: 52.h,
-                    color: AppConst.kGreen,
+                    color: AppConst.kLight,
                     color2: AppConst.kBlueLight,
                     text: finish == ""
                         ? "Finish Time"
@@ -136,29 +116,21 @@ class _AddTaskState extends ConsumerState<AddTask> {
                       scheduleDate.isNotEmpty &&
                       start.isNotEmpty &&
                       finish.isNotEmpty) {
-                    Task task = Task(
-                        title: title.text,
-                        desc: desc.text,
-                        isCompleted: 0,
-                        date: scheduleDate,
-                        startTime: start.substring(10, 16),
-                        endTime: finish.substring(10, 16),
-                        remind: 0,
-                        repeat: "yes");
-                    notifierHelper.scheduledNotification(
-                        notification[0],
-                        notification[1],
-                        notification[2],
-                        notification[3],
-                        task);
-                    ref.read(todoStateProvider.notifier).addItem(task);
-                    // ref.read(finishTimeStateProvider.notifier).setFinish('');
-                    // ref.read(startTimeStateProvider.notifier).setStart('');
-                    // ref.read(dateStateProvider.notifier).setDate('');
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => const HomePage()));
+                    ref.read(todoStateProvider.notifier).updateItem(
+                      widget.id,
+                      title.text,
+                      desc.text,
+                      0,
+                      scheduleDate,
+                      start.substring(10, 16),
+                      finish.substring(10, 16),
+                      );
+                    ref.read(finishTimeStateProvider.notifier).setFinish('');
+                    ref.read(startTimeStateProvider.notifier).setStart('');
+                    ref.read(dateStateProvider.notifier).setDate('');
+                    Navigator.pop(context);
                   } else {
-                    showAlertDialog(context: context, message: 'Failed to add task');
+                    print("Failed to add task");
                   }
                 },
                 widht: AppConst.kWidth,

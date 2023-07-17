@@ -8,6 +8,9 @@ import 'package:lachochant_app/common/widgets/custom_otn_btn.dart';
 import 'package:lachochant_app/common/widgets/custom_text.dart';
 import 'package:lachochant_app/common/widgets/height_spacer.dart';
 import 'package:lachochant_app/common/widgets/reusable_text.dart';
+import 'package:lachochant_app/common/widgets/show_dialogue.dart';
+import 'package:lachochant_app/features/auth/controllers/auth_controller.dart';
+import 'package:lachochant_app/features/auth/controllers/code_provider.dart';
 import 'package:lachochant_app/features/auth/pages/otp_pages.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
@@ -31,6 +34,21 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       displayName: "United States",
       displayNameNoCountryCode: "US",
       e164Key: "");
+
+  sendCodeToUser() {
+    if (phone.text.isEmpty) {
+      return showAlertDialog(
+          context: context, message: "Please enter your phone number");
+    } else if (phone.text.length < 8) {
+      return showAlertDialog(
+          context: context, message: "Your phone number is too short");
+    } else {
+      print('+${(country.phoneCode)}${phone.text}');
+      ref.read(authControllerProvider).sendsSMS(
+          context: context,
+          phone: '+${(country.phoneCode)}${phone.text}');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,15 +84,18 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       showCountryPicker(
                           context: context,
                           countryListTheme: CountryListThemeData(
-                              backgroundColor: AppConst.kLight,
+                              backgroundColor: AppConst.kGreyLight,
                               bottomSheetHeight: AppConst.kHeight * 0.6,
                               borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(AppConst.kRadius),
                                 topRight: Radius.circular(AppConst.kRadius),
                               )),
                           onSelect: (code) {
-                            setState(() {});
+                            setState(() {
+                              country = code;
+                            });
                           });
+                      print(ref.read(codeStateProvider));
                     },
                     child: ReusableText(
                         text: "${country.flagEmoji} + ${country.phoneCode}",
@@ -91,8 +112,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               padding: const EdgeInsets.all(10.0),
               child: CustomOTLNBTN(
                   onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => const OtpPage()));
+                    sendCodeToUser();
                   },
                   widht: AppConst.kWidth * 0.9,
                   height: AppConst.kHeight * 0.075,

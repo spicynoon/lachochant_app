@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "838478063252",
+    "project_id": "lachochant",
+    "storage_bucket": "lachochant.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:838478063252:android:861fb962dcc8a4444b3681",
+        "android_client_info": {
+          "package_name": "com.example.lachochant_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "838478063252-ffm80u40bqhja8cej6u6oou7qa116gut.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgJJJwdOwQ6F49QZw_2aUemUEUliRh6vo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "838478063252-ffm80u40bqhja8cej6u6oou7qa116gut.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

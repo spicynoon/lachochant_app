@@ -1,41 +1,47 @@
 import 'package:dynamic_color/dynamic_color.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:lachochant_app/common/models/user_models.dart';
 import 'package:lachochant_app/common/utils/constants.dart';
+import 'package:lachochant_app/features/auth/controllers/user_controller.dart';
+import 'package:lachochant_app/features/auth/pages/login_page.dart';
+import 'package:lachochant_app/features/onboarding/pages/onboarding.dart';
+import 'package:lachochant_app/features/todo/pages/add.dart';
 import 'package:lachochant_app/features/todo/pages/homepage.dart';
+import 'package:lachochant_app/firebase_options.dart';
 
-void main() {
-  runApp(const ProviderScope (child: MyApp()));
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  runApp(const ProviderScope(child: MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
-  static final defaultLightColorScheme = ColorScheme.fromSwatch(
-    primarySwatch: Colors.blue
-  );
+  static final defaultLightColorScheme =
+      ColorScheme.fromSwatch(primarySwatch: Colors.blue);
 
   static final defaultDarkColorScheme = ColorScheme.fromSwatch(
-    brightness: Brightness.dark,
-    primarySwatch: Colors.blue
-  );
+      brightness: Brightness.dark, primarySwatch: Colors.blue);
 
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.read(userProvider.notifier).refresh();
+    List<UserModel> users = ref.watch(userProvider);
     // builder with screenutil agar aplikasi adaptive responsive
-    // add screenutil on terminal -> wrap MaterialApp with builder 
+    // add screenutil on terminal -> wrap MaterialApp with builder
     // -> ubah return menjadi screenutilinit -> turn useinherited to true
     return ScreenUtilInit(
-      useInheritedMediaQuery: true,
-      designSize: const Size(375, 825),
-      minTextAdapt: true,
-      builder: (
-        context,
-        child) {
-        return DynamicColorBuilder(
-          builder: (lightColorScheme, darkColorScheme) {
+        useInheritedMediaQuery: true,
+        designSize: const Size(375, 825),
+        minTextAdapt: true,
+        builder: (context, child) {
+          return DynamicColorBuilder(
+              builder: (lightColorScheme, darkColorScheme) {
             return MaterialApp(
               title: 'Lachochant App',
               debugShowCheckedModeBanner: false,
@@ -50,11 +56,9 @@ class MyApp extends StatelessWidget {
                 useMaterial3: true,
               ),
               themeMode: ThemeMode.dark,
-              home: const HomePage(),
+              home: users.isEmpty? const HomePage(): const HomePage(),
             );
-          }
-        );
-      }
-    );
+          });
+        });
   }
 }

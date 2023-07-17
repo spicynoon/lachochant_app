@@ -8,14 +8,13 @@ import 'package:lachochant_app/common/widgets/custom_text.dart';
 import 'package:lachochant_app/common/widgets/height_spacer.dart';
 import 'package:lachochant_app/common/widgets/reusable_text.dart';
 import 'package:lachochant_app/common/widgets/width_spacer.dart';
-import 'package:lachochant_app/common/widgets/xpansion_tile.dart';
 import 'package:lachochant_app/features/todo/controllers/todo/todo_provider.dart';
-import 'package:lachochant_app/features/todo/controllers/xpansion_provider.dart';
 import 'package:lachochant_app/features/todo/pages/add.dart';
+import 'package:lachochant_app/features/todo/widgets/completed_task.dart';
+import 'package:lachochant_app/features/todo/widgets/day_adter_tomo.dart';
 import 'package:lachochant_app/features/todo/widgets/today_task.dart';
-import 'package:lachochant_app/features/todo/widgets/todo_tile.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:lachochant_app/features/todo/widgets/tomorrow_list.dart';
+import '../../../common/helpers/notifications_helper.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -28,7 +27,18 @@ class _HomePageState extends ConsumerState<HomePage>
     with TickerProviderStateMixin {
   late final TabController tabController =
       TabController(length: 2, vsync: this);
+  late NotificationsHelper notifierHelper;
+  late NotificationsHelper controller;
   final TextEditingController search = TextEditingController();
+
+  @override
+  void initState(){
+    notifierHelper = NotificationsHelper(ref: ref);
+    Future.delayed(const Duration(seconds: 0), () {
+      controller = NotificationsHelper (ref: ref);
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,6 +89,7 @@ class _HomePageState extends ConsumerState<HomePage>
               const HeightSpacer(hieght: 10),
               CustomTextField(
                 hintText: "Search",
+                hintStyle: TextStyle(color: AppConst.kGreyDk),
                 controller: search,
                 prefixIcon: Container(
                   padding: EdgeInsets.all(14.h),
@@ -86,13 +97,13 @@ class _HomePageState extends ConsumerState<HomePage>
                     onTap: null,
                     child: const Icon(
                       Icons.search_outlined,
-                      color: AppConst.kGreyLight,
+                      color: AppConst.kGreyDk,
                     ),
                   ),
                 ),
                 suffixIcon: const Icon(
                   FontAwesomeIcons.sliders,
-                  color: AppConst.kGreyLight,
+                  color: AppConst.kGreyDk,
                 ),
               ),
               const HeightSpacer(hieght: 12),
@@ -181,6 +192,7 @@ class _HomePageState extends ConsumerState<HomePage>
                     Container(
                       color: AppConst.kBkLight,
                       height: AppConst.kHeight * 0.3,
+                      child: const CompletedTasks(),
                     ),
                   ]),
                 ),
@@ -188,37 +200,8 @@ class _HomePageState extends ConsumerState<HomePage>
               const HeightSpacer(hieght: 20),
               const TomorrowList(),
               const HeightSpacer(hieght: 10),
-              XpansionTile(
-                  text: DateTime.now()
-                      .add(const Duration(days: 2))
-                      .toString()
-                      .substring(5, 10),
-                  text2: "Task are shown here",
-                  onExpansionChanged: (bool expanded) {
-                    ref
-                        .read(xpansionState0Provider.notifier)
-                        .setStart(!expanded);
-                  },
-                  trailing: Padding(
-                    padding: EdgeInsets.only(right: 12.0.w),
-                    child: ref.watch(xpansionState0Provider)
-                        ? Icon(
-                            MdiIcons.arrowDownDropCircle,
-                            color: AppConst.kLight,
-                          )
-                        : Icon(
-                            MdiIcons.arrowUpDropCircle,
-                            color: AppConst.kLight,
-                          ),
-                  ),
-                  children: [
-                    TodoTile(
-                      start: "03.00",
-                      end: "05.00",
-                      switcher: Switch(value: true, onChanged: (value) {}),
-                    )
-                  ]),
-            ],
+              const DayAfterTomo()
+              ],
           ),
         ),
       ),
