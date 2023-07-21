@@ -94,3 +94,11 @@ DBHelper menyediakan metode untuk membuat, membaca, memperbarui, dan menghapus t
 Dalam Lachochant App, DBHelper dapat digunakan untuk menyimpan dan memanipulasi data tugas, seperti nama tugas, deadline, deskripsi, dan status tugas.
 DBHelper menggunakan SQLite sebagai database lokal untuk menyimpan data tugas secara persisten di perangkat pengguna.
 Dalam Flutter, Anda dapat menggunakan package sqflite untuk menghubungkan aplikasi dengan SQLite dan mengelola operasi-operasi database.
+
+## Dokumentasi Aplikasi
+![1](https://github.com/spicynoon/lachochant_app/blob/main/1.png)
+![2](https://github.com/spicynoon/lachochant_app/blob/main/2.png)
+![3](https://github.com/spicynoon/lachochant_app/blob/main/3.png)
+![4](https://github.com/spicynoon/lachochant_app/blob/main/4.png)
+![5](https://github.com/spicynoon/lachochant_app/blob/main/5.png)
+![6](https://github.com/spicynoon/lachochant_app/blob/main/6.png)
