@@ -81,9 +81,10 @@ class NotificationsHelper {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => NotificationsPage(
-                    payload: payload,
-                  )),
+                  MaterialPageRoute(
+                      builder: (context) => NotificationsPage(
+                            payload: payload,
+                          )),
                 );
               },
             )
@@ -102,10 +103,11 @@ class NotificationsHelper {
         tz.TZDateTime.now(tz.local).add(Duration(
             days: days, hours: hours, minutes: minutes, seconds: seconds)),
         const NotificationDetails(
-            android: AndroidNotificationDetails(
-          'your channel id',
-          'your channel name',
-        )),
+          android: AndroidNotificationDetails(
+            'your channel id',
+            'your channel name',
+          ),
+        ),
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         uiLocalNotificationDateInterpretation:
             UILocalNotificationDateInterpretation.absoluteTime,
